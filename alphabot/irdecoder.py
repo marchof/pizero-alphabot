@@ -8,7 +8,7 @@ https://techdocs.altium.com/display/FPGA/NEC+Infrared+Transmission+Protocol
 """
 
 
-_TOLERANCE = 0.20
+_TOLERANCE = 0.25
 
 
 class _UnexpectedPulse(Exception):
