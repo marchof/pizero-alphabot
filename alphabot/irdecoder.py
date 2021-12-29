@@ -24,7 +24,7 @@ class _Pulse(object):
 		self.durationmax = duration + delta
 		
 	def matches(self, actual):
-		return actual >= self.durationmin and actual <= self.durationmax
+		return self.durationmin <= actual <= self.durationmax
 		
 	def expect(self, actual):
 		if not self.matches(actual):
