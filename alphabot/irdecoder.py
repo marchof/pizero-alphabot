@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""Decoder for NEC IR Signals
+
+Implemented according to this specification:
+https://techdocs.altium.com/display/FPGA/NEC+Infrared+Transmission+Protocol
+"""
 
 _TOLERANCE = 0.2
 
@@ -67,8 +75,6 @@ class IRDecoder(object):
 				_SPACE.expect((yield))
 				
 				print("address %s, command %s" % (address, command))
-
-						
-			except _UnexpectedPulse as err:
+				
+			except _UnexpectedPulse:
 				pass
-
