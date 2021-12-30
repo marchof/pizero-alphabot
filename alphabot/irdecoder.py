@@ -7,7 +7,6 @@ Implemented according to this specification:
 https://techdocs.altium.com/display/FPGA/NEC+Infrared+Transmission+Protocol
 """
 
-
 _TOLERANCE = 0.25
 
 
@@ -45,6 +44,16 @@ class IRDecoder(object):
 	def __init__(self):
 		self._state = self._protocol()
 		self._state.send(None)
+		self._address = 0
+		self._command = 0
+		self._keyPressedListeners = []
+		self._repeatListeners = []
+		
+	def addKeyPressedListener(self, func):
+		self._keyPressedListeners.append(func)
+
+	def addRepeatListener(self, func):
+		self._repeatListeners.append(func)
 		
 	def pulse(self, duration):
 		self._state.send(duration)
@@ -77,13 +86,15 @@ class IRDecoder(object):
 				_LEADING.expect((yield))
 				duration = (yield)
 				if _BEGINKEY.matches(duration):
-					address = (yield from self._readbyte_with_complement())
-					command = (yield from self._readbyte_with_complement())
+					self._address = (yield from self._readbyte_with_complement())
+					self._command = (yield from self._readbyte_with_complement())
 					_FINAL.expect((yield))
-					print("address %s, command %s" % (address, command))
+					for l in self._keyPressedListeners:
+						l(self._address, self._command)
 				elif _REPEAT.matches(duration):
 					_FINAL.expect((yield))
-					print("repeat")
+					for l in self._repeatListeners:
+						l(self._address, self._command)
 									
 			except _UnexpectedPulse:
 				pass

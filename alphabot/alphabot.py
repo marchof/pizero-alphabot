@@ -56,7 +56,13 @@ class AlphaBot(object):
 			self.lastevent = 0
 			GPIO.setup(wiring.ir, GPIO.IN)
 			GPIO.add_event_detect(wiring.ir, GPIO.BOTH, callback = self._change)
-			
+
+		def addKeyPressedListener(self, func):
+			self.decoder.addKeyPressedListener(func)
+
+		def addRepeatListener(self, func):
+			self.decoder.addRepeatListener(func)
+
 		def _change(self, pin):
 			now = time.time()
 			duration = now - self.lastevent
